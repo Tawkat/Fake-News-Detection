@@ -26,7 +26,6 @@ def clean_text(text):
     ## Remove puncuation
     text = text.translate(string.punctuation)
 
-    ########################################################################################
     # replace urls
     re_url = re.compile(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\
                         .([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*",
@@ -39,7 +38,7 @@ def clean_text(text):
 
     # replace IPs
     text = re_ip.sub("IPADDRESS", text)
-    ####################################################################
+
 
     ## Convert words to lower case and split them
     text = text.lower().split()
@@ -88,7 +87,7 @@ def clean_text(text):
     return text
 
 
-
+# Reading Dataset
 dataset=pd.read_csv('fulltrain_Guardian_Nyt_binary_shuffled.csv')
 
 texts=[]
@@ -96,22 +95,20 @@ texts=dataset['Statement']
 
 label=dataset['Label']
 
-
+#Cleaning texts
 texts=texts.map(lambda x: clean_text(x))
-
-X=texts.astype(str).values
-X=np.reshape(X,(-1,1))
 
 
 label=label.astype(int).values
 y_train=np.reshape(label,(-1,1))
 
 
+#Max no of Vocab
 vocabulary_size = 400000
 
 timeStep=300
 embedding_size=100
-
+#Tokenizing texts
 tokenizer = Tokenizer(num_words= vocabulary_size)
 tokenizer.fit_on_texts(texts)
 sequences = tokenizer.texts_to_sequences(texts)
@@ -122,6 +119,7 @@ print(len(tokenizer.word_index))
 
 vocab_size=len(tokenizer.word_index)+1
 
+#Reading Glove
 f = open('glove.6B.100d.txt',encoding='utf-8')
 embeddings={}
 for line in f:
@@ -142,9 +140,11 @@ for word, i in tokenizer.word_index.items():
 
 print(embedding_matrix.shape[0],embedding_matrix.shape[1])
 
+#Pickling to save
 import pickle
 with open('pickle_FullTrain_Guard_Nyt_1_100dim.pickle','wb') as f:
     pickle.dump((data,y_train,embedding_matrix),f)
 
 
 '''
+
