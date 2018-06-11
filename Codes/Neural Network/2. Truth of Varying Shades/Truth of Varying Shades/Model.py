@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Flatten, LSTM, Conv1D, MaxPooling1D, Dropout, Activation,Bidirectional,SpatialDropout1D
 from keras.layers.embeddings import Embedding
 
-
+#Load Pickled
 pickle_load=open('pickle_FullTrain_Guard_Nyt_1_100dim.pickle','rb')
 X,y_train,embedding_matrix=pickle.load(pickle_load)
 
