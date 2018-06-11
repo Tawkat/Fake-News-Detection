@@ -20,22 +20,20 @@ hidden_size=100
 embedding_size=300
 dropout=0.5
 
+# Reading Dataset
 dataset=pd.read_csv('fake_or_real_news.csv')
 
 texts=dataset['text'].astype(str).values.tolist()
-#texts=texts.tolist()
-#statement=np.array(statement,dtype='str')
+
 label=dataset['label']
 
 
+#Tokenizing texts
 tokenizer=Tokenizer(num_words=total_word)
 tokenizer.fit_on_texts(texts)
 encoded=tokenizer.texts_to_sequences(texts=texts)
-#print(encoded_docs)
 vocab_size = len(tokenizer.word_index) + 1
 print(vocab_size)
-
-
 
 X = sequence.pad_sequences(encoded, maxlen=time_step,padding='post')
 labelEncoder=LabelEncoder()
@@ -43,6 +41,7 @@ label=labelEncoder.fit_transform(label)
 y=np.reshape(label,(-1,1))
 
 
+#Reading Glove
 f = open('glove.6B.300d.txt',encoding='utf-8')
 embeddings={}
 for line in f:
@@ -79,7 +78,6 @@ maxlen = 200
 model = Sequential()
 model.add(Embedding(vocab_size, embedding_size, input_length=maxlen,
                     weights=[embedding_matrix],trainable=False))
-#model.add(Dropout(0.4))
 
 model.add(GRU(100))
 
@@ -95,3 +93,4 @@ model.compile(loss='binary_crossentropy',
 model.fit(X_train, y_train, batch_size=64,epochs=30,validation_data=(X_test,y_test))
 
 #score=model.evaluate(X_test,y_test,verbose=1)
+
